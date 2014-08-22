@@ -1,0 +1,9 @@
+E:\0_thok\信和达\Source\HolderCommInterface\HolderCommInterface\HolderCommInterface\bin\Debug\HolderCommInterface.exe.config
+E:\0_thok\信和达\Source\HolderCommInterface\HolderCommInterface\HolderCommInterface\bin\Debug\HolderCommInterface.exe
+E:\0_thok\信和达\Source\HolderCommInterface\HolderCommInterface\HolderCommInterface\bin\Debug\HolderCommInterface.pdb
+E:\0_thok\信和达\Source\HolderCommInterface\HolderCommInterface\HolderCommInterface\obj\Debug\HolderCommInterface.csprojResolveAssemblyReference.cache
+E:\0_thok\信和达\Source\HolderCommInterface\HolderCommInterface\HolderCommInterface\obj\Debug\HolderCommInterface.frmMain.resources
+E:\0_thok\信和达\Source\HolderCommInterface\HolderCommInterface\HolderCommInterface\obj\Debug\HolderCommInterface.Properties.Resources.resources
+E:\0_thok\信和达\Source\HolderCommInterface\HolderCommInterface\HolderCommInterface\obj\Debug\HolderCommInterface.csproj.GenerateResource.Cache
+E:\0_thok\信和达\Source\HolderCommInterface\HolderCommInterface\HolderCommInterface\obj\Debug\HolderCommInterface.exe
+E:\0_thok\信和达\Source\HolderCommInterface\HolderCommInterface\HolderCommInterface\obj\Debug\HolderCommInterface.pdb
