@@ -50,6 +50,8 @@ namespace HolderCommInterface
 
            // btnReadItem.Enabled = false;
          //   btnWriteItem.Enabled = false;
+
+            Start_Service();
         }
 
         public int setPort
@@ -178,8 +180,31 @@ namespace HolderCommInterface
         /// </summary>
         /// <param name="Data"></param>
         public void HandleDatafromErp(string Data)
-        { 
-           
+        {
+            switch (Data)
+            {
+                case "1":
+                    SendData2Plc(1,1);
+                    break;
+                case "2":
+                    SendData2Plc(2, 1);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private string[] Addr = {"D0100","D0101"};
+
+        public void SendData2Plc(int piIdx, int value)
+        {
+            object[] data = { Addr[piIdx], value };
+            if (plc.Write(data))
+            {
+                showClientMsg("Write 2 Plc Sucessed ");
+            }
+            else
+                showClientMsg("Write 2 Plc Failed ");
         }
 
         //以下实现发送广播消息
@@ -227,9 +252,20 @@ namespace HolderCommInterface
             }  
         }
 
-        private void btnStartService_Click(object sender, EventArgs e)
+        public void Start_Service()
         {
-            if (plc.creatConn(txtPlcIP.Text, txtPlcPort.Text,ref errMsg))
+
+            if (bConnFlag) return;
+
+
+            if (string.IsNullOrEmpty(txtPlcIP.Text.Trim())||string.IsNullOrEmpty(txtPlcPort.Text.Trim()))
+            {
+                MessageBox.Show("Please Input correct Ip Address or Port");
+
+                return;
+            }
+
+            if (plc.creatConn(txtPlcIP.Text, txtPlcPort.Text, ref errMsg))
             {
                 showClientMsg("Connect 2 Plc Sucessed.");
                 bConnFlag = true;
@@ -242,6 +278,11 @@ namespace HolderCommInterface
 
             btnReadItem.Enabled = bConnFlag;
             btnWriteItem.Enabled = bConnFlag;
+        }
+
+        private void btnStartService_Click(object sender, EventArgs e)
+        {
+            Start_Service();
         }
 
         private void btnReadItem_Click(object sender, EventArgs e)
@@ -257,10 +298,18 @@ namespace HolderCommInterface
 
         private void btnWriteItem_Click(object sender, EventArgs e)
         {
+            if(string.IsNullOrEmpty(txtDataAddr.Text.Trim())||string.IsNullOrEmpty(txtValue.Text.Trim()))
+            {
+                MessageBox.Show("Please Input correct Dm Address or Value ","Message");
+
+                return;
+
+            }
+
             object[] data = { txtDataAddr.Text, txtValue.Text };
             if (plc.Write(data))
             {
-                showClientMsg("Write 2 Plc Sucessed");
+                showClientMsg("Write 2 Plc Sucessed ");
             }
             else
                 showClientMsg("Write 2 Plc Failed ");
