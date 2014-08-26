@@ -56,9 +56,9 @@
             // 
             this.gbLog.Controls.Add(this.showinfo);
             this.gbLog.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.gbLog.Location = new System.Drawing.Point(0, 234);
+            this.gbLog.Location = new System.Drawing.Point(0, 229);
             this.gbLog.Name = "gbLog";
-            this.gbLog.Size = new System.Drawing.Size(600, 149);
+            this.gbLog.Size = new System.Drawing.Size(456, 149);
             this.gbLog.TabIndex = 0;
             this.gbLog.TabStop = false;
             this.gbLog.Text = "log";
@@ -68,7 +68,7 @@
             this.showinfo.Dock = System.Windows.Forms.DockStyle.Fill;
             this.showinfo.Location = new System.Drawing.Point(3, 17);
             this.showinfo.Name = "showinfo";
-            this.showinfo.Size = new System.Drawing.Size(594, 129);
+            this.showinfo.Size = new System.Drawing.Size(450, 129);
             this.showinfo.TabIndex = 0;
             this.showinfo.Text = "";
             // 
@@ -81,7 +81,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(227, 234);
+            this.panel1.Size = new System.Drawing.Size(227, 229);
             this.panel1.TabIndex = 1;
             // 
             // userList
@@ -89,7 +89,7 @@
             this.userList.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.userList.FormattingEnabled = true;
             this.userList.ItemHeight = 12;
-            this.userList.Location = new System.Drawing.Point(0, 98);
+            this.userList.Location = new System.Drawing.Point(0, 93);
             this.userList.Name = "userList";
             this.userList.Size = new System.Drawing.Size(227, 136);
             this.userList.TabIndex = 5;
@@ -137,7 +137,7 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel2.Location = new System.Drawing.Point(227, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(227, 234);
+            this.panel2.Size = new System.Drawing.Size(227, 229);
             this.panel2.TabIndex = 2;
             // 
             // label1
@@ -240,12 +240,14 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(600, 383);
+            this.ClientSize = new System.Drawing.Size(456, 378);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.gbLog);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "frmMain";
             this.Text = "HolderCommInterface";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmMain_FormClosing);
             this.gbLog.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();

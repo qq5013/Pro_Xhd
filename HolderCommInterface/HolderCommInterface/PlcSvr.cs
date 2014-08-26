@@ -19,7 +19,6 @@ namespace HolderCommInterface
         private int readCount = 1;//read address count from begin address
         private int writeCount = 1;//write address count from begin address
 
-
         private byte[] StringToBytes16(string source)
         {
             byte[] destination = new byte[source.Length / 2];

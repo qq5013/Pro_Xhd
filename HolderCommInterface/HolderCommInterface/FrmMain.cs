@@ -11,6 +11,7 @@ using System.Threading;
 using System.Net.Sockets;
 using System.Collections;
 using System.Net;
+using Common;
 
 namespace HolderCommInterface
 {
@@ -48,8 +49,8 @@ namespace HolderCommInterface
 
             bConnFlag = false;
 
-           // btnReadItem.Enabled = false;
-         //   btnWriteItem.Enabled = false;
+            btnReadItem.Enabled = false;
+            btnWriteItem.Enabled = false;
 
             Start_Service();
         }
@@ -102,8 +103,7 @@ namespace HolderCommInterface
             {
                 userList.Items.Remove(msg);
             }
-        }
-       
+        }       
 
         //监听函数
         public void Listen()
@@ -139,13 +139,15 @@ namespace HolderCommInterface
             Client = server1.EndAccept(ar);
             //将要发送给连接上来的客户端的提示字符串
             DateTimeOffset now = DateTimeOffset.Now;
-            string strDateLine = "Welcome";
-            Byte[] byteDateLine = System.Text.Encoding.UTF8.GetBytes(strDateLine);
+      //      string strDateLine = "Welcome";
+
+     //       Byte[] byteDateLine = System.Text.Encoding.UTF8.GetBytes(strDateLine);
+
             //将提示信息发送给客户端,并在服务端显示连接信息。
             remote = Client.RemoteEndPoint;
 
-            showClientMsg(now.ToString("G") + Client.RemoteEndPoint.ToString() + " Connected " + "\r\n");
-            Client.Send(byteDateLine, byteDateLine.Length, 0);
+            showClientMsg(now.ToString("G") + Client.RemoteEndPoint.ToString() + "  Connected " + "\r\n");
+     //       Client.Send(byteDateLine, byteDateLine.Length, 0);
             userListOperate(Client.RemoteEndPoint.ToString());
 
             //把连接成功的客户端的SOCKET实例放入哈希表
@@ -154,10 +156,12 @@ namespace HolderCommInterface
             //等待新的客户端连接
             server1.BeginAccept(new AsyncCallback(OnConnectRequest), server1);
 
+            byte[] RevBuffer = new byte[1024];
+
             while (true)
             {
-                int recv = Client.Receive(byteDateLine);
-                string stringdata = Encoding.UTF8.GetString(byteDateLine, 0, recv);
+                int recv = Client.Receive(RevBuffer);
+                string stringdata = Encoding.UTF8.GetString(RevBuffer, 0, recv);
                 string ip = Client.RemoteEndPoint.ToString();
                 //获取客户端的IP和端口
                 if (stringdata == "STOP")
@@ -169,9 +173,19 @@ namespace HolderCommInterface
                 }
 
                 //显示客户端发送过来的信息
-                showClientMsg(now.ToString("G") + "-->" + ip + stringdata + "\r\n");
+                showClientMsg(now.ToString("G") + "--> " + ip + " " + stringdata + "\r\n");
 
-                HandleDatafromErp(stringdata);
+                string SeqNo = stringdata.Substring(0, 6);
+                string BcrNo = stringdata.Substring(6, 1);
+                string Flag = stringdata.Substring(7, 1);
+
+                bool Result = HandleDatafromErp(SeqNo, BcrNo, Flag);
+         
+                string Msg = string.Format("{0}{1}", SeqNo, Result ? "1" : "0");
+
+                Byte[] sendData = Encoding.UTF8.GetBytes(Msg);
+
+                Client.Send(sendData, sendData.Length, 0);
             }
         }
 
@@ -179,46 +193,42 @@ namespace HolderCommInterface
         /// 处理上位系统发来的信息，含是否生成条码数据成功，此过程负责处理把标志写给下位机
         /// </summary>
         /// <param name="Data"></param>
-        public void HandleDatafromErp(string Data)
+        public bool HandleDatafromErp(string psSeqNo,string psBcrNo,string psFlag)
         {
-            switch (Data)
+            bool Result = false;
+
+            switch (psBcrNo)
             {
                 case "1":
-                    SendData2Plc(1,1);
+                    Result = SendData2Plc(psSeqNo, 0, Convert.ToInt16(psFlag));
                     break;
                 case "2":
-                    SendData2Plc(2, 1);
+                    Result = SendData2Plc(psSeqNo, 1, Convert.ToInt16(psFlag));
                     break;
                 default:
                     break;
             }
+
+            return Result;
         }
 
         private string[] Addr = {"D0100","D0101"};
 
-        public void SendData2Plc(int piIdx, int value)
+        public bool SendData2Plc(string psSeqNo, int piIdx, int value)
         {
             object[] data = { Addr[piIdx], value };
             if (plc.Write(data))
             {
                 showClientMsg("Write 2 Plc Sucessed ");
+
+                return true;
             }
             else
-                showClientMsg("Write 2 Plc Failed ");
-        }
-
-        //以下实现发送广播消息
-        public void SendBroadMsg(string msg)
-        {
-            string strDataLine = msg;
-            Byte[] sendData = Encoding.UTF8.GetBytes(strDataLine);
-
-            foreach (DictionaryEntry de in _sessionTable)
             {
-                EndPoint temp = (EndPoint)de.Key;
+                showClientMsg("Write 2 Plc Failed ");
 
-                Client.SendTo(sendData, temp);
-            }
+                return false;
+            }               
         }
 
         /// <summary>
@@ -272,8 +282,10 @@ namespace HolderCommInterface
             }
             else
             {
-                showClientMsg("Connect 2 Plc Failed :" + errMsg);
+                showClientMsg("Connect 2 Plc Failed!" );
                 bConnFlag = false;
+
+                LogHelper.WriteLog(string.Format("Error :{0}-->{1}", DateTime.Now.ToString(), "Connect 2 Plc Failed" + errMsg));
             }
 
             btnReadItem.Enabled = bConnFlag;
@@ -287,7 +299,14 @@ namespace HolderCommInterface
 
         private void btnReadItem_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(txtDataAddr.Text.Trim()))
+            {
+                MessageBox.Show("Please Input correct Dm Address!", "Message");
+                return;                
+            }
+            
             int[] data = { Convert.ToInt16(txtDataAddr.Text),1};
+
             if (plc.Read(ref data))
             {
                 showClientMsg("Read from  Plc Sucessed");
@@ -303,7 +322,6 @@ namespace HolderCommInterface
                 MessageBox.Show("Please Input correct Dm Address or Value ","Message");
 
                 return;
-
             }
 
             object[] data = { txtDataAddr.Text, txtValue.Text };
@@ -315,5 +333,31 @@ namespace HolderCommInterface
                 showClientMsg("Write 2 Plc Failed ");
         }
 
+        //以下实现消息广播
+        public void SendBroadMsg(string msg)
+        {
+            string strDataLine = msg;
+            Byte[] sendData = Encoding.UTF8.GetBytes(strDataLine);
+
+            foreach (DictionaryEntry de in _sessionTable)
+            {
+                EndPoint temp = (EndPoint)de.Key;
+
+                Client.SendTo(sendData, temp);
+            }
+        }
+
+        private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (myThread != null)
+            {
+                myThread.Abort();
+            }
+
+            if (plc != null)
+            {
+                plc.close();
+            }
+        }
     }
 }

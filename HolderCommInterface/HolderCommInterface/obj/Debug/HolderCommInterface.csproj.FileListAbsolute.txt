@@ -7,3 +7,6 @@ E:\0_thok\信和达\Source\HolderCommInterface\HolderCommInterface\HolderCommInt
 E:\0_thok\信和达\Source\HolderCommInterface\HolderCommInterface\HolderCommInterface\obj\Debug\HolderCommInterface.csproj.GenerateResource.Cache
 E:\0_thok\信和达\Source\HolderCommInterface\HolderCommInterface\HolderCommInterface\obj\Debug\HolderCommInterface.exe
 E:\0_thok\信和达\Source\HolderCommInterface\HolderCommInterface\HolderCommInterface\obj\Debug\HolderCommInterface.pdb
+E:\0_thok\信和达\Source\HolderCommInterface\HolderCommInterface\HolderCommInterface\bin\Debug\log4net.config
+E:\0_thok\信和达\Source\HolderCommInterface\HolderCommInterface\HolderCommInterface\bin\Debug\log4net.dll
+E:\0_thok\信和达\Source\HolderCommInterface\HolderCommInterface\HolderCommInterface\bin\Debug\log4net.xml
